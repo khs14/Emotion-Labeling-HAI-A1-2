@@ -1,0 +1,12 @@
+{
+  "name": "emotion-labeling-functions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Optional Cloud Function: periodically releases stale tweet locks back to the pool. Not required to run the app (the client already handles staleness itself) — this is a defense-in-depth extra for a production deployment. Requires the Blaze (pay-as-you-go) plan; the free tier of scheduled functions comfortably covers a class-sized deployment.",
+  "main": "index.js",
+  "engines": { "node": "20" },
+  "dependencies": {
+    "firebase-admin": "^12.3.1",
+    "firebase-functions": "^5.0.0"
+  }
+}

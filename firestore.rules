@@ -1,0 +1,145 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Update this list to match VITE_ADMIN_EMAILS in your .env ---
+    function isAdminEmail() {
+      return request.auth != null &&
+        request.auth.token.email in [
+          'kaustubh.hari.sethi.14@gmail.com'
+        ];
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ---------------- participants ----------------
+    match /participants/{uid} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid) || isAdminEmail();
+      allow delete: if isAdminEmail();
+    }
+
+    // ---------------- tweets ----------------
+    match /tweets/{tweetId} {
+      allow read: if isSignedIn();
+
+      allow create: if isAdminEmail();
+
+      allow update: if isAdminEmail() || (
+        isSignedIn() &&
+
+        // Never allow participants to modify the tweet text
+        // or the dataset ground-truth label.
+        request.resource.data.text == resource.data.text &&
+        request.resource.data.trueLabel == resource.data.trueLabel &&
+
+        (
+          // Case 1: locking an available/stale-locked tweet.
+          (
+            resource.data.status == 'available' &&
+            (
+              resource.data.lockedBy == null ||
+              resource.data.lockedBy == request.auth.uid ||
+              request.time > resource.data.lockedAt + duration.value(20, 'm')
+            ) &&
+            request.resource.data.status == 'available' &&
+            request.resource.data.lockedBy == request.auth.uid
+          ) ||
+
+          // Case 2: submitting a label on your locked tweet.
+          (
+            resource.data.status == 'available' &&
+            resource.data.lockedBy == request.auth.uid &&
+            request.resource.data.status == 'submitted' &&
+            request.resource.data.submittedBy == request.auth.uid
+          ) ||
+
+          // Case 3: withdrawing your own submitted label.
+          (
+            resource.data.status == 'submitted' &&
+            resource.data.submittedBy == request.auth.uid &&
+            request.resource.data.status == 'available' &&
+            request.resource.data.lockedBy == null &&
+            request.resource.data.submittedBy == null
+          ) ||
+
+          // Case 4: releasing your own stale/unused lock.
+          (
+            resource.data.status == 'available' &&
+            resource.data.lockedBy == request.auth.uid &&
+            request.resource.data.status == 'available' &&
+            request.resource.data.lockedBy == null
+          )
+        )
+      );
+
+      allow delete: if isAdminEmail();
+    }
+
+    // ---------------- submissions ----------------
+    // Private annotation records.
+    // These contain the dataset ground truth and therefore remain private.
+    match /submissions/{submissionId} {
+      allow read: if isAdminEmail() ||
+        (
+          isSignedIn() &&
+          resource.data.participantUid == request.auth.uid
+        );
+
+      allow create: if isSignedIn() &&
+        request.resource.data.participantUid == request.auth.uid;
+
+      allow delete: if isAdminEmail() ||
+        (
+          isSignedIn() &&
+          resource.data.participantUid == request.auth.uid
+        );
+
+      allow update: if false;
+    }
+
+    // ---------------- publicSubmissions ----------------
+    // Safe records for the participant board.
+    //
+    // IMPORTANT:
+    // These records do NOT contain trueLabel.
+    // They contain only the participant's selected label.
+    match /publicSubmissions/{submissionId} {
+      // Any signed-in participant can view the board.
+      allow read: if isSignedIn();
+
+      // Participants can only create a public record for themselves.
+      // Only the explicitly allowed fields can be written.
+      allow create: if isSignedIn()
+        && request.resource.data.participantUid == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'participantUid',
+          'publicName',
+          'isAnonymous',
+          'tweetId',
+          'tweetText',
+          'selectedEmotion',
+          'submittedAt'
+        ]);
+
+      // A participant can remove their own public record when
+      // withdrawing a submission. Admin can also remove records.
+      allow delete: if isAdminEmail() ||
+        (
+          isSignedIn() &&
+          resource.data.participantUid == request.auth.uid
+        );
+
+      // Public records cannot be modified after creation.
+      allow update: if false;
+    }
+  }
+}
