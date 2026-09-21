@@ -89,17 +89,27 @@ export default function LabelingPage() {
   }
 
   if (status === 'already-completed') {
-    return (
-      <div className="container">
-        <h1>You&rsquo;re all set</h1>
-        <p>You&rsquo;ve already submitted labels for your assigned tweets. Thank you!</p>
-        <p>
-          <Link to="/my-submissions">View or withdraw your submissions</Link> ·{' '}
-          <Link to="/board">See the participant board</Link>
-        </p>
-      </div>
-    );
-  }
+  return (
+    <div className="container">
+      <h1>You&rsquo;re all set</h1>
+
+      <p>
+        You&rsquo;ve already submitted labels for your assigned tweets. Thank you!
+      </p>
+
+      <p>
+        <Link to="/my-submissions">View or withdraw your submissions</Link> ·{' '}
+        <Link to="/board">See the participant board</Link>
+      </p>
+
+      <p className="muted">
+        If you recently withdrew a submission, please wait{' '}
+        <strong>2 minutes</strong>, then reload the Task page to receive a new
+        assignment.
+      </p>
+    </div>
+  );
+}
 
   if (status === 'error') {
     return (
