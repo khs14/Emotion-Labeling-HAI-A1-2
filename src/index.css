@@ -17,6 +17,15 @@
   --emotion-sadness: #3e6489;
   --emotion-surprise: #2e8b7a;
 
+  /* Text selection */
+  --selection-bg: #000000;
+  --selection-fg: #ff3b30;
+
+  /* Scrollbar */
+  --scrollbar-thumb: #1f4d36;
+  --scrollbar-thumb-hover: #163a28;
+  --scrollbar-track: transparent;
+
   --serif: 'Source Serif 4', Georgia, serif;
   --sans: 'Inter', system-ui, -apple-system, sans-serif;
 
@@ -35,6 +44,39 @@ body {
   font-size: 16px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+}
+
+/* -------- Text selection (black background, red text) -------- */
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+::-moz-selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+/* -------- Thin dark green scrollbar -------- */
+/* Firefox and current Chrome/Edge */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* Safari and older WebKit browsers */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }
 
 h1, h2, h3, h4 {
