@@ -52,7 +52,7 @@ export default function LoginPage() {
         <p className="muted">
           Sign in with Google to begin. Your Google account is used only to
           identify you as a single participant, so we know which tweets you
-          labeled — one account, one set of five tweets.
+          labeled (one account, one set of five tweets).
         </p>
 
         <button
