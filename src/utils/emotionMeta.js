@@ -1,26 +1,26 @@
 export const EMOTION_META = {
   anger: {
     color: 'var(--emotion-anger)',
-    description: 'Feeling annoyed, frustrated, or mad about something.',
+    description: 'The writer sounds irritated, frustrated, or furious.',
   },
   fear: {
     color: 'var(--emotion-fear)',
-    description: 'Feeling scared, anxious, or worried about something.',
+    description: 'The writer sounds anxious, worried, or afraid.',
   },
   joy: {
     color: 'var(--emotion-joy)',
-    description: 'Feeling happy, excited, or pleased about something.',
+    description: 'The writer sounds happy, excited, or delighted.',
   },
   love: {
     color: 'var(--emotion-love)',
-    description: 'Feeling affection, warmth, or care toward someone or something.',
+    description: 'The writer expresses affection, warmth, or care for someone or something.',
   },
   sadness: {
     color: 'var(--emotion-sadness)',
-    description: 'Feeling down, disappointed, or grieving about something.',
+    description: 'The writer sounds down, disappointed, or heartbroken.',
   },
   surprise: {
     color: 'var(--emotion-surprise)',
-    description: 'Feeling caught off guard, astonished, or amazed by something.',
+    description: 'The writer sounds shocked, astonished, or caught off guard.',
   },
 };
