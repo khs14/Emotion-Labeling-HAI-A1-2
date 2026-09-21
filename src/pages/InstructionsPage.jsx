@@ -39,13 +39,6 @@ export default function InstructionsPage() {
         <li>When you submit, you&rsquo;ll choose whether the public participant board shows your real name or a randomly generated anonymous name.</li>
       </ul>
 
-      <div className="banner banner-info">
-        A note on the task itself: classifying human emotion from a short line of text — by a
-        person or by an AI — is genuinely hard and often ambiguous. The same words can read
-        differently depending on tone, sarcasm, or context you can&rsquo;t see. Part of the point of
-        this exercise is to notice that difficulty firsthand.
-      </div>
-
       <button className="btn btn-primary" onClick={() => navigate('/task')}>
         Start labeling
       </button>
